@@ -8,6 +8,10 @@ import (
 var Scrapers []scrapers.Scraper
 
 func main() {
+
+	// TODO: Implement logging
+	// TODO: Implement API
+
 	db.Connect()
 
 	Scrapers = append(Scrapers, scrapers.NewBackcountryScraper())

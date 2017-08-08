@@ -5,6 +5,7 @@ import (
 	"errors"
 	"bytes"
 	"strings"
+	"strconv"
 
 	"github.com/berryhill/web-scrapper/models"
 
@@ -13,6 +14,9 @@ import (
 
 // simulating a db collection
 var bc_urls_store = map[int]string {
+
+	// TODO: Make model to be retrieved from DB
+
 	1: "/fly-rods",
 }
 
@@ -65,10 +69,8 @@ func (bc *BackcountryScraper) getName(
 	var actual_name bytes.Buffer
 	done := false
 	for k, str := range string_array {
-		if str == "Fly" {
-			if string_array[k+1] == "Rod" {
-				done = true
-			}
+		if str == "-" {
+			done = true
 		} else {
 			if !done {
 				actual_name.WriteString(string_array[k] + " ")
@@ -138,30 +140,48 @@ func (bc *BackcountryScraper) Scrape() (
 	for product_type, url := range bc.Urls {
 		doc, _ := goquery.NewDocument(bc.BaseUrl + url)
 
-		selection := doc.Find(".product")
-		selection.Each(func(i int, item *goquery.Selection) {
-			product := models.NewProduct()
-			product.Type = product_type
-			product.Brand, _ = bc.getBrand(item)
-			product.Name, _ = bc.getName(item)
-			product.Price, _ = bc.getPrice(item)
-			product.Url, _ = bc.getUrl(item)
-			product.Retailer = bc.Retailer
+		// TODO: Implement pagination into its own method
 
-			product.Image, err = bc.getImg(item)
-			err = errors.New("New Error")
-			if err != nil {
-				errs = append(errs, err)
+		pagination := doc.Find(".pag")
+		var total_pages string
+		pagination.Find(
+			"li").Each(func(i int, item *goquery.Selection) {
+			if item.Text() != "Next Page" {
+				total_pages = item.Text()
 			}
-
-			products = append(products, product)
-			found, _ := product.Handle(product.Name, product.Brand)
-			if found {
-				item_added++
-			}
-
-			item_count++
 		})
+
+		for k := 0; k <= len(total_pages); k++ {
+			if k != 0 {
+				url := strings.Join(
+					[]string{"/fly-rods?page=", strconv.Itoa(k)}, "")
+				doc, _ = goquery.NewDocument(bc.BaseUrl + url)
+			}
+			selection := doc.Find(".product")
+			selection.Each(func(i int, item *goquery.Selection) {
+				product := models.NewProduct()
+				product.Type = product_type
+				product.Brand, _ = bc.getBrand(item)
+				product.Name, _ = bc.getName(item)
+				product.Price, _ = bc.getPrice(item)
+				product.Url, _ = bc.getUrl(item)
+				product.Retailer = bc.Retailer
+
+				product.Image, err = bc.getImg(item)
+				err = errors.New("New Error")
+				if err != nil {
+					errs = append(errs, err)
+				}
+
+				products = append(products, product)
+				found, _ := product.Handle(product.Name, product.Brand)
+				if found {
+					item_added++
+				}
+
+				item_count++
+			})
+		}
 	}
 
 	fmt.Println("Items found: ", item_count)

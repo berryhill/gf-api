@@ -41,30 +41,26 @@ func (p *Product) MarshalJson() ([]byte, error) {
 }
 
 
-func (p *Product) Handle(name string, brand string) (bool, error) {
+func (p *Product) Handle(name string, brand string) (found bool, err error) {
+
+	// TODO: Handle Details
+	// TODO: Improve product validation with details
 
 	session := db.Session.Clone()
 	defer session.Close()
 
 	collection := session.DB("test").C("fly_rods")
 
-	found := false; result := Product{}
-	err := collection.Find(
+	found = false; result := Product{}
+	err = collection.Find(
 		bson.M{"name": name, "brand": brand}).One(&result)
+
+	// TODO: Need to compare error to "not found"
+
 	if err != nil {
 		found = true
 		p.create()
 	}
-
-	//p.ProductId = result.ProductId
-	//p.Active = result.Active
-	//p.Url = result.Url
-	//p.Image = result.Image
-	//p.Type = result.Type
-	//p.Brand = result.Brand
-	//p.Name = result.Name
-	//p.Price = result.Price
-	//p.Details = result.Details
 
 	return found, err
 }
