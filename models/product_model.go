@@ -34,6 +34,22 @@ func NewProduct() *Product {
 	return p
 }
 
+
+func (p *Product) Create(db_col string) error {
+
+	session := db.Session.Clone()
+	defer session.Close()
+
+	collection := session.DB("test").C(db_col)
+
+	err := collection.Insert(p)
+	if err != nil {
+		errors.New("Error inserting Product into DB")
+	}
+
+	return err
+}
+
 func (p *Product) MarshalJson() ([]byte, error) {
 
 	json, _ := json.Marshal(p)
@@ -43,7 +59,7 @@ func (p *Product) MarshalJson() ([]byte, error) {
 
 
 func (p *Product) Handle(
-	name string, title string, brand string, url string) (
+	name string, title string, brand string, url string, db_col string) (
 	found bool, err error) {
 
 	// TODO: Improve product validation with details
@@ -51,11 +67,10 @@ func (p *Product) Handle(
 	session := db.Session.Clone()
 	defer session.Close()
 
-	collection := session.DB("test").C("fly_rods")
+	collection := session.DB("test").C(db_col)
 
 	found = false; result := Product{}
 	err = collection.Find(bson.M{
-			"name": name,
 			"title": title,
 			"brand": brand,
 			"url": url}).One(&result)
@@ -64,28 +79,12 @@ func (p *Product) Handle(
 
 	if err != nil {
 		found = true
-		p.create()
+		p.Create(db_col)
 	} else {
 		p.Print()
 	}
 
 	return found, err
-}
-
-
-func (p *Product) create() error {
-
-	session := db.Session.Clone()
-	defer session.Close()
-
-	collection := session.DB("test").C("fly_rods")
-
-	err := collection.Insert(p)
-	if err != nil {
-		errors.New("Error inserting Product into DB")
-	}
-
-	return err
 }
 
 func (p *Product) Print() {

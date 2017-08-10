@@ -1,23 +1,30 @@
 package main
 
 import (
-	"github.com/berryhill/web-scrapper/scrapers"
 	"github.com/berryhill/web-scrapper/db"
-)
+	"github.com/berryhill/web-scrapper/server"
 
-var Scrapers []scrapers.Scraper
+	"github.com/labstack/echo"
+)
 
 func main() {
 
 	// TODO: Implement logging
-	// TODO: Implement API
 
 	db.Connect()
+	server.SetupScrapers()
 
-	Scrapers = append(Scrapers, scrapers.NewBackcountryScraper())
-	Scrapers[0].Scrape()
+	//retailer := models.NewRetailer(
+	//	"backcountry",
+	//	"https://www.backcountry.com",
+	//	"/fly-rods",
+	//	"fly_rods",
+	//)
+	//retailer.Create()
+
+
+	e := echo.New()
+	e.POST("/backcountry/scrape", server.ScrapeBackcountry)
+	e.Logger.Fatal(e.Start(":1323"))
 }
 
-//func init(){
-//	Scrapers = append(Scrapers, scrapers.NewBackcountryScraper())
-//}
