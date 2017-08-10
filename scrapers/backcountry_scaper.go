@@ -15,7 +15,7 @@ import (
 // simulating a db collection
 var bc_urls_store = map[int]string {
 
-	// TODO: Make model to be retrieved from DB
+	// TODO: Implement a model to be retrieved from DB
 
 	1: "/fly-rods",
 }
@@ -78,9 +78,17 @@ func (bc *BackcountryScraper) getName(
 		}
 	}
 
-	name = actual_name.String()
+	name = TrimSuffix(actual_name.String(), " ")
 
-	return TrimSuffix(name, " "), nil
+	return name, nil
+}
+
+func (bc *BackcountryScraper) getTitle(
+	item *goquery.Selection) (name string, err error) {
+
+	name = item.Find(".ui-pl-name-title").Text()
+
+	return name, nil
 }
 
 func (bc *BackcountryScraper) getPrice(
@@ -130,6 +138,20 @@ func (bc *BackcountryScraper) getImg(
 	return "", errors.New("Image not found")
 }
 
+func (bc *BackcountryScraper) getDetails(
+	item *goquery.Selection) (details []string, err error) {
+
+	name := item.Find(".ui-pl-name-title").Text()
+	string_array := strings.Split(name, " - ")
+
+	if len(string_array) > 1 {
+		details = append(details, string_array[1])
+	}
+
+
+	return details, nil
+}
+
 func (bc *BackcountryScraper) Scrape() (
 	products []*models.Product, errs []error) {
 
@@ -163,6 +185,7 @@ func (bc *BackcountryScraper) Scrape() (
 				product.Type = product_type
 				product.Brand, _ = bc.getBrand(item)
 				product.Name, _ = bc.getName(item)
+				product.Title, _ = bc.getTitle(item)
 				product.Price, _ = bc.getPrice(item)
 				product.Url, _ = bc.getUrl(item)
 				product.Retailer = bc.Retailer
@@ -173,8 +196,11 @@ func (bc *BackcountryScraper) Scrape() (
 					errs = append(errs, err)
 				}
 
+				product.Details, _ = bc.getDetails(item)
+
 				products = append(products, product)
-				found, _ := product.Handle(product.Name, product.Brand)
+				found, _ := product.Handle(
+					product.Name, product.Title, product.Brand, product.Url)
 				if found {
 					item_added++
 				}

@@ -18,9 +18,10 @@ type Product struct {
 	Type 			string        			`json:"type"`
 	Brand			string        			`json:"brand"`
 	Name 			string        			`json:"name"`
+	Title			string                	`json:"title"`
 	Price 			string        			`json:"price"`
 	Retailer		string                  `json:"retailer"`
-	Details			map[string]string		`json:"details"`
+	Details			[]string				`json:"details"`
 }
 
 func NewProduct() *Product {
@@ -41,9 +42,10 @@ func (p *Product) MarshalJson() ([]byte, error) {
 }
 
 
-func (p *Product) Handle(name string, brand string) (found bool, err error) {
+func (p *Product) Handle(
+	name string, title string, brand string, url string) (
+	found bool, err error) {
 
-	// TODO: Handle Details
 	// TODO: Improve product validation with details
 
 	session := db.Session.Clone()
@@ -52,14 +54,19 @@ func (p *Product) Handle(name string, brand string) (found bool, err error) {
 	collection := session.DB("test").C("fly_rods")
 
 	found = false; result := Product{}
-	err = collection.Find(
-		bson.M{"name": name, "brand": brand}).One(&result)
+	err = collection.Find(bson.M{
+			"name": name,
+			"title": title,
+			"brand": brand,
+			"url": url}).One(&result)
 
 	// TODO: Need to compare error to "not found"
 
 	if err != nil {
 		found = true
 		p.create()
+	} else {
+		p.Print()
 	}
 
 	return found, err
