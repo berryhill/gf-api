@@ -24,7 +24,11 @@ func main() {
 
 
 	e := echo.New()
+
 	e.POST("/backcountry/scrape", server.ScrapeBackcountry)
+
+	e.GET("/products/:product", server.GetProducts)
+
 	e.Logger.Fatal(e.Start(":1323"))
 }
 

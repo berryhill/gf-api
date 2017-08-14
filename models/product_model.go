@@ -5,8 +5,9 @@ import (
 	"errors"
 	"encoding/json"
 
-	"gopkg.in/mgo.v2/bson"
 	"github.com/berryhill/web-scrapper/db"
+
+	"gopkg.in/mgo.v2/bson"
 )
 
 
@@ -44,10 +45,27 @@ func (p *Product) Create(db_col string) error {
 
 	err := collection.Insert(p)
 	if err != nil {
-		errors.New("Error inserting Product into DB")
+		errors.New("Error inserting product into DB")
 	}
 
 	return err
+}
+
+func GetAllProducts(product string) (products []*Product, err error) {
+
+	session := db.Session.Clone()
+	defer session.Close()
+
+	// TODO: Implement a product collection to check if product exists
+	
+	collection := session.DB("test").C(product)
+
+	err = collection.Find(nil).All(&products)
+	if err != nil {
+		// TODO: Log error
+	}
+
+	return products, err
 }
 
 func (p *Product) MarshalJson() ([]byte, error) {
