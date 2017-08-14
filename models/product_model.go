@@ -23,6 +23,7 @@ type Product struct {
 	Price 			string        			`json:"price"`
 	Retailer		string                  `json:"retailer"`
 	Details			[]string				`json:"details"`
+	Managed			bool                	`json:"managed"`
 }
 
 func NewProduct() *Product {
@@ -31,6 +32,7 @@ func NewProduct() *Product {
 	product_id := bson.NewObjectId()
 	p.ProductId = &product_id
 	p.Active = true
+	p.Managed = false
 
 	return p
 }
@@ -57,7 +59,7 @@ func GetAllProducts(product string) (products []*Product, err error) {
 	defer session.Close()
 
 	// TODO: Implement a product collection to check if product exists
-	
+
 	collection := session.DB("test").C(product)
 
 	err = collection.Find(nil).All(&products)
