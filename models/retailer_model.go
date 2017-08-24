@@ -3,7 +3,7 @@ package models
 import (
 	"errors"
 
-	"github.com/berryhill/web-scrapper/db"
+	"github.com/berryhill/gf-api/db"
 	"gopkg.in/mgo.v2/bson"
 	"fmt"
 )

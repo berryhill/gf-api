@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/berryhill/web-scrapper/db"
-	"github.com/berryhill/web-scrapper/server"
+	"github.com/berryhill/gf-api/db"
+	"github.com/berryhill/gf-api/server"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"

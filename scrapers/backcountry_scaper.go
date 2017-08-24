@@ -7,7 +7,7 @@ import (
 	"strings"
 	"strconv"
 
-	"github.com/berryhill/web-scrapper/models"
+	"github.com/berryhill/gf-api/models"
 
 	"github.com/PuerkitoBio/goquery"
 )

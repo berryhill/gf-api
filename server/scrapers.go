@@ -3,7 +3,7 @@ package server
 import (
 	"net/http"
 
-	"github.com/berryhill/web-scrapper/scrapers"
+	"github.com/berryhill/gf-api/scrapers"
 
 	"github.com/labstack/echo"
 )

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"encoding/json"
 
-	"github.com/berryhill/web-scrapper/db"
+	"github.com/berryhill/gf-api/db"
 
 	"gopkg.in/mgo.v2/bson"
 )
