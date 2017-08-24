@@ -5,16 +5,15 @@ import (
 	"errors"
 	"bytes"
 	"strings"
+	"strconv"
 
 	"github.com/berryhill/web-scrapper/models"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
-// simulating a db collection
-var bc_urls_store = map[int]string {
-	1: "/fly-rods",
-}
+// TODO: Implement error handling
+// TODO: Implement logging
 
 type htmlLink struct {
 	Text string
@@ -22,30 +21,16 @@ type htmlLink struct {
 }
 
 type BackcountryScraper struct {
-	BaseUrl			string
-	Urls 			map[string]string
-	Retailer		string
+	Retailer		*models.Retailer
 }
 
 func NewBackcountryScraper() *BackcountryScraper {
 
 	bc := new(BackcountryScraper)
-	bc.BaseUrl = "https://www.backcountry.com"
-	bc.Retailer = "backcountry"
-	bc.Urls, _ = bc.getUrls()
+	retailer := models.Retailer{}
+	bc.Retailer, _ = retailer.Get("backcountry")
 
 	return bc
-}
-
-func (bc *BackcountryScraper) getUrls() (
-	urls map[string]string, err error) {
-
-	urls = make(map[string]string)
-	for k := range products_store {
-		urls[products_store[k]] = bc_urls_store[k]
-	}
-
-	return urls, nil
 }
 
 func (bc *BackcountryScraper) getBrand(
@@ -65,10 +50,8 @@ func (bc *BackcountryScraper) getName(
 	var actual_name bytes.Buffer
 	done := false
 	for k, str := range string_array {
-		if str == "Fly" {
-			if string_array[k+1] == "Rod" {
-				done = true
-			}
+		if str == "-" {
+			done = true
 		} else {
 			if !done {
 				actual_name.WriteString(string_array[k] + " ")
@@ -76,9 +59,17 @@ func (bc *BackcountryScraper) getName(
 		}
 	}
 
-	name = actual_name.String()
+	name = TrimSuffix(actual_name.String(), " ")
 
-	return TrimSuffix(name, " "), nil
+	return name, nil
+}
+
+func (bc *BackcountryScraper) getTitle(
+	item *goquery.Selection) (name string, err error) {
+
+	name = item.Find(".ui-pl-name-title").Text()
+
+	return name, nil
 }
 
 func (bc *BackcountryScraper) getPrice(
@@ -104,7 +95,7 @@ func (bc *BackcountryScraper) getUrl(
 	})
 	if ok {
 
-		return bc.BaseUrl + href, nil
+		return bc.Retailer.BaseUrl + href, nil
 	}
 
 	return "", errors.New("Url not found")
@@ -128,44 +119,89 @@ func (bc *BackcountryScraper) getImg(
 	return "", errors.New("Image not found")
 }
 
+func (bc *BackcountryScraper) getDetails(
+	item *goquery.Selection) (details []string, err error) {
+
+	name := item.Find(".ui-pl-name-title").Text()
+	string_array := strings.Split(name, " - ")
+
+	if len(string_array) > 1 {
+		details = append(details, string_array[1])
+	}
+
+	return details, nil
+}
+
 func (bc *BackcountryScraper) Scrape() (
-	products []*models.Product, errs []error) {
+	//products []*models.Product, errs []error) {
+	response map[string]int, errs []error) {
 
 	item_count := 0
 	item_added := 0
 
 	var err error
-	for product_type, url := range bc.Urls {
-		doc, _ := goquery.NewDocument(bc.BaseUrl + url)
+	for product_type, url := range bc.Retailer.Products {
 
-		selection := doc.Find(".product")
-		selection.Each(func(i int, item *goquery.Selection) {
-			product := models.NewProduct()
-			product.Type = product_type
-			product.Brand, _ = bc.getBrand(item)
-			product.Name, _ = bc.getName(item)
-			product.Price, _ = bc.getPrice(item)
-			product.Url, _ = bc.getUrl(item)
-			product.Retailer = bc.Retailer
+		doc, _ := goquery.NewDocument(
+			bc.Retailer.BaseUrl + url)
 
-			product.Image, err = bc.getImg(item)
-			err = errors.New("New Error")
-			if err != nil {
-				errs = append(errs, err)
+		// TODO: Refactor pagination into its own method
+		// TODO: Refactor to be entirely dynamic pulling data from DB
+
+		pagination := doc.Find(".pag")
+		var total_pages string
+		pagination.Find(
+			"li").Each(func(i int, item *goquery.Selection) {
+			if item.Text() != "Next Page" {
+				total_pages = item.Text()
 			}
-
-			products = append(products, product)
-			found, _ := product.Handle(product.Name, product.Brand)
-			if found {
-				item_added++
-			}
-
-			item_count++
 		})
+
+		for k := 0; k <= len(total_pages); k++ {
+			if k != 0 {
+				url := strings.Join(
+					[]string{url + "?page=",
+						strconv.Itoa(k)}, "")
+				doc, _ = goquery.NewDocument(bc.Retailer.BaseUrl + url)
+			}
+			selection := doc.Find(".product")
+			selection.Each(func(i int, item *goquery.Selection) {
+				product := models.NewProduct()
+				product.Type = product_type
+				product.Brand, _ = bc.getBrand(item)
+				product.Name, _ = bc.getName(item)
+				product.Title, _ = bc.getTitle(item)
+				product.Price, _ = bc.getPrice(item)
+				product.Url, _ = bc.getUrl(item)
+				product.Retailer = bc.Retailer.Name
+
+				product.Image, err = bc.getImg(item)
+				err = errors.New("New Error")
+				if err != nil {
+					errs = append(errs, err)
+				}
+
+				product.Details, _ = bc.getDetails(item)
+
+				found, _ := product.Handle(
+					product.Name, product.Title, product.Brand, product.Url,
+					product_type)
+				if found {
+					//products = append(products, product)
+					item_added++
+				}
+
+				item_count++
+			})
+		}
 	}
+
+	response = make(map[string]int)
+	response["items_found"] = item_count
+	response["items_added"] = item_added
 
 	fmt.Println("Items found: ", item_count)
 	fmt.Println("Items added: ", item_added)
 
-	return products, errs
+	return response, errs
 }

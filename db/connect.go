@@ -15,7 +15,7 @@ const (
 	AuthDatabase = ""
 	AuthUserName = ""
 	AuthPassword = ""
-	TestDatabase = "goinggo"
+	TestDatabase = "test"
 )
 
 func Connect() {
@@ -37,6 +37,7 @@ func Connect() {
 }
 
 func Clone() *mgo.Session {
+	
 	session := Session.Clone()
 	defer session.Close()
 

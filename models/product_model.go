@@ -5,8 +5,9 @@ import (
 	"errors"
 	"encoding/json"
 
-	"gopkg.in/mgo.v2/bson"
 	"github.com/berryhill/web-scrapper/db"
+
+	"gopkg.in/mgo.v2/bson"
 )
 
 
@@ -18,9 +19,11 @@ type Product struct {
 	Type 			string        			`json:"type"`
 	Brand			string        			`json:"brand"`
 	Name 			string        			`json:"name"`
+	Title			string                	`json:"title"`
 	Price 			string        			`json:"price"`
 	Retailer		string                  `json:"retailer"`
-	Details			map[string]string		`json:"details"`
+	Details			[]string				`json:"details"`
+	Managed			bool                	`json:"managed"`
 }
 
 func NewProduct() *Product {
@@ -29,8 +32,42 @@ func NewProduct() *Product {
 	product_id := bson.NewObjectId()
 	p.ProductId = &product_id
 	p.Active = true
+	p.Managed = false
 
 	return p
+}
+
+
+func (p *Product) Create(db_col string) error {
+
+	session := db.Session.Clone()
+	defer session.Close()
+
+	collection := session.DB("test").C(db_col)
+
+	err := collection.Insert(p)
+	if err != nil {
+		errors.New("Error inserting product into DB")
+	}
+
+	return err
+}
+
+func GetAllProducts(product string) (products []*Product, err error) {
+
+	session := db.Session.Clone()
+	defer session.Close()
+
+	// TODO: Implement a product collection to check if product exists
+
+	collection := session.DB("test").C(product)
+
+	err = collection.Find(nil).All(&products)
+	if err != nil {
+		// TODO: Log error
+	}
+
+	return products, err
 }
 
 func (p *Product) MarshalJson() ([]byte, error) {
@@ -41,48 +78,33 @@ func (p *Product) MarshalJson() ([]byte, error) {
 }
 
 
-func (p *Product) Handle(name string, brand string) (bool, error) {
+func (p *Product) Handle(
+	name string, title string, brand string, url string, db_col string) (
+	found bool, err error) {
+
+	// TODO: Improve product validation with details
 
 	session := db.Session.Clone()
 	defer session.Close()
 
-	collection := session.DB("test").C("fly_rods")
+	collection := session.DB("test").C(db_col)
 
-	found := false; result := Product{}
-	err := collection.Find(
-		bson.M{"name": name, "brand": brand}).One(&result)
+	found = false; result := Product{}
+	err = collection.Find(bson.M{
+			"title": title,
+			"brand": brand,
+			"url": url}).One(&result)
+
+	// TODO: Need to compare error to "not found"
+
 	if err != nil {
 		found = true
-		p.create()
+		p.Create(db_col)
+	} else {
+		p.Print()
 	}
-
-	//p.ProductId = result.ProductId
-	//p.Active = result.Active
-	//p.Url = result.Url
-	//p.Image = result.Image
-	//p.Type = result.Type
-	//p.Brand = result.Brand
-	//p.Name = result.Name
-	//p.Price = result.Price
-	//p.Details = result.Details
 
 	return found, err
-}
-
-
-func (p *Product) create() error {
-
-	session := db.Session.Clone()
-	defer session.Close()
-
-	collection := session.DB("test").C("fly_rods")
-
-	err := collection.Insert(p)
-	if err != nil {
-		errors.New("Error inserting Product into DB")
-	}
-
-	return err
 }
 
 func (p *Product) Print() {
