@@ -1,0 +1,6 @@
+package: github.com/berryhill/gf-api
+import:
+- package: github.com/labstack/echo
+  version: v3.2.1
+- package: github.com/PuerkitoBio/goquery
+  version: v1.1.0

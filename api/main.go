@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/berryhill/gf-api/db"
 	"github.com/berryhill/gf-api/server"
+  // "github.com/berryhill/gf-api/models"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -15,14 +16,13 @@ func main() {
 	db.Connect()
 	server.SetupScrapers()
 
-	//retailer := models.NewRetailer(
-	//	"backcountry",
-	//	"https://www.backcountry.com",
-	//	"/fly-rods",
-	//	"fly_rods",
-	//)
-	//retailer.Create()
-
+	// retailer := models.NewRetailer(
+	// 	"backcountry",
+	// 	"https://www.backcountry.com",
+	// 	"/fly-rods",
+	// 	"fly_rods",
+	// )
+	// retailer.Create()
 
 	e := echo.New()
 
@@ -37,6 +37,5 @@ func main() {
 
 	//TODO: Implement search
 
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(":8080"))
 }
-
