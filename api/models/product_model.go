@@ -59,7 +59,8 @@ func GetAllProducts(product string) (products []*Product, err error) {
 	defer session.Close()
 
 	// TODO: Implement a product collection to check if product exists
-
+	// TODO: Implement kabab case in the URI.. currently '../fly_rods'
+	
 	collection := session.DB("test").C(product)
 
 	err = collection.Find(nil).All(&products)
@@ -122,4 +123,3 @@ func (p *Product) Print() {
 	fmt.Println(p.Price)
 	fmt.Println()
 }
-

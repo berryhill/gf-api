@@ -11,7 +11,8 @@ import (
 var Session *mgo.Session  // Session stores mongo session
 
 const (
-	MongoDBHosts = "localhost:27017"
+	//MongoDBHosts = "10.15.248.93:27017"
+	 MongoDBHosts = "172.17.0.1:27017"
 	AuthDatabase = ""
 	AuthUserName = ""
 	AuthPassword = ""
@@ -37,7 +38,7 @@ func Connect() {
 }
 
 func Clone() *mgo.Session {
-	
+
 	session := Session.Clone()
 	defer session.Close()
 
