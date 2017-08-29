@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/berryhill/gf-api/db"
-	"github.com/berryhill/gf-api/server"
+	"github.com/berryhill/gf-api/api/db"
+	"github.com/berryhill/gf-api/api/server"
   // "github.com/berryhill/gf-api/models"
 
 	"github.com/labstack/echo"
