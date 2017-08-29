@@ -33,6 +33,8 @@ func main() {
 
 	e.POST("/backcountry/scrape", server.ScrapeBackcountry)
 
+	e.GET("/product-types", server.GetProductTypes)
+
 	e.GET("/products/:product", server.GetProducts)
 
 	//TODO: Implement search
