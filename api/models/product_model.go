@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"errors"
+	"net/url"
 	"encoding/json"
 
 	"github.com/berryhill/gf-api/api/db"
@@ -51,24 +52,6 @@ func (p *Product) Create(db_col string) error {
 	}
 
 	return err
-}
-
-func GetAllProducts(product string) (products []*Product, err error) {
-
-	session := db.Session.Clone()
-	defer session.Close()
-
-	// TODO: Implement a product collection to check if product exists
-	// TODO: Implement kabab case in the URI.. currently '../fly_rods'
-	
-	collection := session.DB("test").C(product)
-
-	err = collection.Find(nil).All(&products)
-	if err != nil {
-		// TODO: Log error
-	}
-
-	return products, err
 }
 
 func (p *Product) MarshalJson() ([]byte, error) {
@@ -122,4 +105,46 @@ func (p *Product) Print() {
 	fmt.Println(p.Name)
 	fmt.Println(p.Price)
 	fmt.Println()
+}
+
+func GetProducts(
+	product string, query_params url.Values) (
+	products []*Product, err error) {
+
+	// TODO: Implement a product collection to check if product exists
+	// TODO: Implement kabab case in the URI.. currently '../fly_rods'
+
+
+	session := db.Session.Clone()
+	defer session.Close()
+
+	collection := session.DB("test").C(product)
+
+	params_exist := false
+	for _ = range query_params {
+		params_exist = true
+	}
+
+	//collection.Find(bson.M{"abc": &bson.RegEx{Pattern: "efg", Options: "i"}})
+
+	if params_exist {
+		for key, value := range query_params {
+			if key == "search" {
+				fmt.Println(value[0])
+				err = collection.Find(
+					bson.M{
+						"$text": bson.M{"$search": value[0]}}).All(&products)
+				if err != nil {
+					// TODO: Log error
+				}
+			}
+		}
+	} else {
+		err = collection.Find(nil).All(&products)
+		if err != nil {
+			// TODO: Log error
+		}
+	}
+
+	return products, err
 }

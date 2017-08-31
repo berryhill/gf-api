@@ -12,7 +12,7 @@ func GetProducts(c echo.Context) error {
 
 	product := c.Param("product")
 
-	products, _ := models.GetAllProducts(product)
+	products, _ := models.GetProducts(product, c.QueryParams())
 
 	return c.JSON(http.StatusOK, products)
 }
