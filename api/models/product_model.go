@@ -108,7 +108,7 @@ func (p *Product) Print() {
 }
 
 func GetProducts(
-	product string, query_params url.Values) (
+	product string, query_params url.Values, page int, per_page int) (
 	products []*Product, err error) {
 
 	// TODO: Implement a product collection to check if product exists
