@@ -38,7 +38,7 @@ func GetProducts(c echo.Context) error {
 	}
 	for k := 0; k < page_count; k++ {
 		products_paginated = append(
-			products_paginated, (products[(((k+1)*page)-1)]))
+			products_paginated, (products[k + ((page - 1) * per_page)]))
 	}
 
 	metadata := make(map[string]interface{})
