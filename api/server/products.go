@@ -27,7 +27,16 @@ func GetProducts(c echo.Context) error {
 
 	products, _ := models.GetProducts(product, c.QueryParams(), page, per_page)
 	var products_paginated []*models.Product
-	for k := 0; k < per_page; k++ {
+
+	// TODO: Fix internal server error when page is out of range
+
+	last_page := len(products) / per_page + 1; var page_count int
+	if page == last_page {
+		page_count = len(products) % per_page
+	} else {
+		page_count = per_page
+	}
+	for k := 0; k < page_count; k++ {
 		products_paginated = append(
 			products_paginated, (products[(((k+1)*page)-1)]))
 	}
