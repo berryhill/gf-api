@@ -97,13 +97,13 @@ func (p *Product) Print() {
 		return
 	}
 
+	fmt.Println(p.Name)
+	fmt.Println(p.Brand)
+	fmt.Println(p.Type)
+	fmt.Println(p.Price)
 	fmt.Println(p.Active)
 	fmt.Println(p.Url)
 	fmt.Println(p.Image)
-	fmt.Println(p.Type)
-	fmt.Println(p.Brand)
-	fmt.Println(p.Name)
-	fmt.Println(p.Price)
 	fmt.Println()
 }
 

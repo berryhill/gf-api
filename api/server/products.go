@@ -29,6 +29,9 @@ func GetProducts(c echo.Context) error {
 	var products_paginated []*models.Product
 
 	// TODO: Fix internal server error when page is out of range
+	// TODO: Implement total pages metadata
+	// TODO: Implement full text search
+	// TODO: Implement full substring search
 
 	last_page := len(products) / per_page + 1; var page_count int
 	if page == last_page {
@@ -45,6 +48,7 @@ func GetProducts(c echo.Context) error {
 	metadata["page"] = page
 	metadata["per_page"] = per_page
 	metadata["count"] = len(products)
+	metadata["page_count"] = last_page
 
 	response := make(map[string]interface{})
 	response["metadata"] = metadata

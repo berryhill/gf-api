@@ -2,10 +2,11 @@ package models
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/berryhill/gf-api/api/db"
+
 	"gopkg.in/mgo.v2/bson"
-	"fmt"
 )
 
 
@@ -53,6 +54,7 @@ func (r *Retailer) Get(name string) (*Retailer, error) {
 
 	result := Retailer{}
 	err := collection.Find(bson.M{"name": name}).One(&result)
+
 	if err != nil {
 		return &result, nil
 	}
