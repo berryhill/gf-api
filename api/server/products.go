@@ -28,8 +28,6 @@ func GetProducts(c echo.Context) error {
 	products, _ := models.GetProducts(product, c.QueryParams(), page, per_page)
 	var products_paginated []*models.Product
 
-	// TODO: Fix internal server error when page is out of range
-	// TODO: Implement total pages metadata
 	// TODO: Implement full text search
 	// TODO: Implement full substring search
 
