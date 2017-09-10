@@ -65,11 +65,11 @@ func (bc *BackcountryScraper) getName(
 }
 
 func (bc *BackcountryScraper) getTitle(
-	item *goquery.Selection) (name string, err error) {
+	item *goquery.Selection) (title string, err error) {
 
-	name = item.Find(".ui-pl-name-title").Text()
+	title = item.Find(".ui-pl-name-title").Text()
 
-	return name, nil
+	return title, nil
 }
 
 func (bc *BackcountryScraper) getPrice(
@@ -133,7 +133,6 @@ func (bc *BackcountryScraper) getDetails(
 }
 
 func (bc *BackcountryScraper) Scrape() (
-	//products []*models.Product, errs []error) {
 	response map[string]int, errs []error) {
 
 	item_count := 0
