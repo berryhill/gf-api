@@ -23,9 +23,10 @@ func GetProducts(c echo.Context) error {
 		}
 	}
 
-	product := c.Param("product")
+	product_type := c.Param("product")
 
-	products, _ := models.GetProducts(product, c.QueryParams(), page, per_page)
+	products, _ := models.GetProducts(
+		product_type, c.QueryParams(), page, per_page)
 	var products_paginated []*models.Product
 
 	// TODO: Implement full text search

@@ -79,7 +79,7 @@ func (bc *BackcountryScraper) getPrice(
 	if price_html.Text() != "" {
 		price = price_html.Text()
 	} else {
-		price_html = item.Find(".ui-pl-pricing-high-price")
+		price_html = scraped.Find(".ui-pl-pricing-high-price")
 		price = price_html.Text()
 	}
 

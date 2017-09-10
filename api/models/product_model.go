@@ -14,37 +14,37 @@ import (
 
 type Product struct {
 	ProductId		*bson.ObjectId          `json:"product_id"`
-	Active			bool          			`json:"active"`
-	Url 			string        			`json:"url"`
-	Image 			string        			`json:"image"`
-	Type 			string        			`json:"type"`
-	Brand			string        			`json:"brand"`
 	Name 			string        			`json:"name"`
-	Title			string                	`json:"title"`
-	Price 			string        			`json:"price"`
-	Retailer		string                  `json:"retailer"`
-	Details			[]string				`json:"details"`
+	Brand			string					`json:"brand"`
+	Price			string					`json:"price"`
+	StandardPrice	string					`json:"standard_price"`
+	ItemIds			[]*bson.ObjectId		`json:"product_ids"`
+	items			[]*Item					`json:"items"`
+	BestDealId		*bson.ObjectId          `json:"best_deal_id"`
+	bestDeal		*Item					`json:"best_deal"`
+	PercentDiscount	string					`json:"percent_discount"`
 	Managed			bool                	`json:"managed"`
 }
 
-func NewProduct() *Product {
+func NewProduct(name string, brand string) *Product {
 
 	p := new(Product)
 	product_id := bson.NewObjectId()
+	p.Name = name
+	p.Brand = brand
 	p.ProductId = &product_id
-	p.Active = true
 	p.Managed = false
 
 	return p
 }
 
 
-func (p *Product) Create(db_col string) error {
+func (p *Product) Create() error {
 
 	session := db.Session.Clone()
 	defer session.Close()
 
-	collection := session.DB("test").C(db_col)
+	collection := session.DB("test").C("products")
 
 	err := collection.Insert(p)
 	if err != nil {
@@ -60,7 +60,6 @@ func (p *Product) MarshalJson() ([]byte, error) {
 
 	return json, nil
 }
-
 
 func (p *Product) Handle(
 	name string, title string, brand string, url string, db_col string) (
@@ -83,7 +82,7 @@ func (p *Product) Handle(
 
 	if err != nil {
 		found = true
-		p.Create(db_col)
+		p.Create()
 	} else {
 		p.Print()
 	}
@@ -99,16 +98,15 @@ func (p *Product) Print() {
 
 	fmt.Println(p.Name)
 	fmt.Println(p.Brand)
-	fmt.Println(p.Type)
 	fmt.Println(p.Price)
-	fmt.Println(p.Active)
-	fmt.Println(p.Url)
-	fmt.Println(p.Image)
+	fmt.Println(p.StandardPrice)
+	fmt.Println(p.PercentDiscount)
+
 	fmt.Println()
 }
 
 func GetProducts(
-	product string, query_params url.Values, page int, per_page int) (
+	product_type string, query_params url.Values, page int, per_page int) (
 	products []*Product, err error) {
 
 	// TODO: Implement a product collection to check if product exists
@@ -118,14 +116,12 @@ func GetProducts(
 	session := db.Session.Clone()
 	defer session.Close()
 
-	collection := session.DB("test").C(product)
+	collection := session.DB("test").C("products")
 
 	params_exist := false
 	for _ = range query_params {
 		params_exist = true
 	}
-
-	//collection.Find(bson.M{"abc": &bson.RegEx{Pattern: "efg", Options: "i"}})
 
 	if params_exist {
 		for key, value := range query_params {

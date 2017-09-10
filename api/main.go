@@ -41,7 +41,5 @@ func main() {
 
 	e.GET("/products/:product", server.GetProducts)
 
-	//TODO: Implement search
-
 	e.Logger.Fatal(e.Start(":8080"))
 }

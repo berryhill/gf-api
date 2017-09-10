@@ -13,6 +13,7 @@ import (
 
 
 type Item struct {
+	ItemId			*bson.ObjectId          `json:"item_id"`
 	ProductId		*bson.ObjectId          `json:"product_id"`
 	Active			bool          			`json:"active"`
 	Url 			string        			`json:"url"`
@@ -31,7 +32,7 @@ func NewItem() *Item {
 
 	i := new(Item)
 	item_id := bson.NewObjectId()
-	i.ProductId = &item_id
+	i.ItemId = &item_id
 	i.Active = true
 	i.Managed = false
 
@@ -60,7 +61,6 @@ func (i *Item) MarshalJson() ([]byte, error) {
 
 	return json, nil
 }
-
 
 func (i *Item) Handle(
 	name string, title string, brand string, url string, db_col string) (
@@ -104,6 +104,7 @@ func (i *Item) Print() {
 	fmt.Println(i.Active)
 	fmt.Println(i.Url)
 	fmt.Println(i.Image)
+
 	fmt.Println()
 }
 
