@@ -5,9 +5,12 @@ import (
 	"github.com/berryhill/gf-api/api/server"
     //"github.com/berryhill/gf-api/api/models"
 
+
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"github.com/dgrijalva/jwt-go"
 )
+
 
 func main() {
 
@@ -34,6 +37,18 @@ func main() {
 		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
 	}))
 
+	adminGroup := e.Group("/admin")
+	config := middleware.JWTConfig{
+		Claims:     &jwtCustomClaims{},
+		SigningKey: []byte("secret"),
+	}
+	adminGroup.Use(middleware.JWTWithConfig(config))
+
+	// TODO: Implement CMS endpoints
+	e.POST("/login", server.Login)
+	//adminGroup.POST("/product", server.CreateProduct)
+	//e.PUT("/product", server.UpdateProduct)
+
 	e.POST("/backcountry/scrape", server.ScrapeBackcountry)
 	e.POST("/cabelas/scrape", server.ScrapeCabelas)
 
@@ -42,4 +57,10 @@ func main() {
 	e.GET("/products/:product", server.GetProducts)
 
 	e.Logger.Fatal(e.Start(":8080"))
+}
+
+type jwtCustomClaims struct {
+	Name  	string 		`json:"name"`
+	Admin 	bool   		`json:"admin"`
+	jwt.StandardClaims
 }
