@@ -34,17 +34,17 @@ func NewBackcountryScraper() *BackcountryScraper {
 }
 
 func (bc *BackcountryScraper) getBrand(
-	item *goquery.Selection) (brand string, err error) {
+	scraped *goquery.Selection) (brand string, err error) {
 
-	brand = item.Find(".ui-pl-name-brand.qa-brand-name").Text()
+	brand = scraped.Find(".ui-pl-name-brand.qa-brand-name").Text()
 
 	return brand, nil
 }
 
 func (bc *BackcountryScraper) getName(
-	item *goquery.Selection) (name string, err error) {
+	scraped *goquery.Selection) (name string, err error) {
 
-	name = item.Find(".ui-pl-name-title").Text()
+	name = scraped.Find(".ui-pl-name-title").Text()
 	string_array := strings.Split(name, " ")
 
 	var actual_name bytes.Buffer
@@ -65,17 +65,17 @@ func (bc *BackcountryScraper) getName(
 }
 
 func (bc *BackcountryScraper) getTitle(
-	item *goquery.Selection) (title string, err error) {
+	scraped *goquery.Selection) (title string, err error) {
 
-	title = item.Find(".ui-pl-name-title").Text()
+	title = scraped.Find(".ui-pl-name-title").Text()
 
 	return title, nil
 }
 
 func (bc *BackcountryScraper) getPrice(
-	item *goquery.Selection) (price string, err error) {
+	scraped *goquery.Selection) (price string, err error) {
 
-	price_html := item.Find(".ui-pl-pricing-low-price")
+	price_html := scraped.Find(".ui-pl-pricing-low-price")
 	if price_html.Text() != "" {
 		price = price_html.Text()
 	} else {
@@ -87,10 +87,10 @@ func (bc *BackcountryScraper) getPrice(
 }
 
 func (bc *BackcountryScraper) getUrl(
-	item *goquery.Selection) (href string, err error) {
+	scraped *goquery.Selection) (href string, err error) {
 
 	var ok bool
-	item.Find("a").Each(func(_ int, link *goquery.Selection) {
+	scraped.Find("a").Each(func(_ int, link *goquery.Selection) {
 		href, ok = link.Attr("href")
 	})
 	if ok {
@@ -102,10 +102,10 @@ func (bc *BackcountryScraper) getUrl(
 }
 
 func (bc *BackcountryScraper) getImg(
-	item *goquery.Selection) (img string, err error) {
+	scraped *goquery.Selection) (img string, err error) {
 
 	var ok bool
-	item.Find("img").Each(func(_ int, link *goquery.Selection) {
+	scraped.Find("img").Each(func(_ int, link *goquery.Selection) {
 		img, ok = link.Attr("data-src")
 		if img == "" {
 			img , ok = link.Attr("src")
@@ -120,9 +120,9 @@ func (bc *BackcountryScraper) getImg(
 }
 
 func (bc *BackcountryScraper) getDetails(
-	item *goquery.Selection) (details []string, err error) {
+	scraped *goquery.Selection) (details []string, err error) {
 
-	name := item.Find(".ui-pl-name-title").Text()
+	name := scraped.Find(".ui-pl-name-title").Text()
 	string_array := strings.Split(name, " - ")
 
 	if len(string_array) > 1 {
@@ -164,27 +164,27 @@ func (bc *BackcountryScraper) Scrape() (
 				doc, _ = goquery.NewDocument(bc.Retailer.BaseUrl + url)
 			}
 			selection := doc.Find(".product")
-			selection.Each(func(i int, item *goquery.Selection) {
-				product := models.NewProduct()
-				product.Type = product_type
-				product.Brand, _ = bc.getBrand(item)
-				product.Name, _ = bc.getName(item)
-				product.Title, _ = bc.getTitle(item)
-				product.Price, _ = bc.getPrice(item)
-				product.Url, _ = bc.getUrl(item)
-				product.Retailer = bc.Retailer.Name
+			selection.Each(func(i int, scraped *goquery.Selection) {
+				item := models.NewItem()
+				item.Type = product_type
+				item.Brand, _ = bc.getBrand(scraped)
+				item.Name, _ = bc.getName(scraped)
+				item.Title, _ = bc.getTitle(scraped)
+				item.Price, _ = bc.getPrice(scraped)
+				item.Url, _ = bc.getUrl(scraped)
+				item.Retailer = bc.Retailer.Name
 
-				product.Image, err = bc.getImg(item)
+				item.Image, err = bc.getImg(scraped)
 				err = errors.New("New Error")
 				if err != nil {
 					errs = append(errs, err)
 				}
 
-				product.Details, _ = bc.getDetails(item)
+				item.Details, _ = bc.getDetails(scraped)
 
-				found, _ := product.Handle(
-					product.Name, product.Title, product.Brand, product.Url,
-					product_type)
+				found, _ := item.Handle(
+					item.Name, item.Title, item.Brand, item.Url,
+					"items")
 				if found {
 					//products = append(products, product)
 					item_added++

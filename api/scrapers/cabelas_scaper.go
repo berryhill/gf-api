@@ -43,9 +43,9 @@ func NewCabelasScraper() *CabelasScraper {
 }
 
 func (cb *CabelasScraper) getBrand(
-	item *goquery.Selection) (brand string, err error) {
+	scraped *goquery.Selection) (brand string, err error) {
 
-	title := item.Find(
+	title := scraped.Find(
 		".productContentBlock").Find(
 		"a").Find("h3").Text()
 
@@ -55,9 +55,9 @@ func (cb *CabelasScraper) getBrand(
 }
 
 func (cb *CabelasScraper) getName(
-	item *goquery.Selection) (name string, err error) {
+	scraped *goquery.Selection) (name string, err error) {
 
-	name = item.Find(
+	name = scraped.Find(
 		".productContentBlock").Find(
 		"a").Find("h3").Text()
 
@@ -65,9 +65,9 @@ func (cb *CabelasScraper) getName(
 }
 
 func (cb *CabelasScraper) getTitle(
-	item *goquery.Selection) (title string, err error) {
+	scraped *goquery.Selection) (title string, err error) {
 
-	title = item.Find(
+	title = scraped.Find(
 		".productContentBlock").Find(
 		"a").Find("h3").Text()
 
@@ -75,9 +75,9 @@ func (cb *CabelasScraper) getTitle(
 }
 
 func (cb *CabelasScraper) getPrice(
-	item *goquery.Selection) (price string, err error) {
+	scraped *goquery.Selection) (price string, err error) {
 
-	price = item.Find(
+	price = scraped.Find(
 		".pricingBlock").Find(".itemPrice").Text()
 
 	price_formatted := ""
@@ -91,10 +91,10 @@ func (cb *CabelasScraper) getPrice(
 }
 
 func (cb *CabelasScraper) getUrl(
-	item *goquery.Selection) (href string, err error) {
+	scraped *goquery.Selection) (href string, err error) {
 
 	var ok bool
-	item.Find(
+	scraped.Find(
 		".imageBlock").Find(
 		"a").Each(func(_ int, link *goquery.Selection) {
 
@@ -109,10 +109,10 @@ func (cb *CabelasScraper) getUrl(
 }
 
 func (cb *CabelasScraper) getImg(
-	item *goquery.Selection) (img string, err error) {
+	scraped *goquery.Selection) (img string, err error) {
 
 	var ok bool
-	item.Find(
+	scraped.Find(
 		".imageBlock").Find(
 		"a").Find(
 		"img").Each(func(_ int, link *goquery.Selection) {
@@ -128,9 +128,9 @@ func (cb *CabelasScraper) getImg(
 }
 
 func (cb *CabelasScraper) getDetails(
-	item *goquery.Selection) (details []string, err error) {
+	scraped *goquery.Selection) (details []string, err error) {
 
-	name := item.Find(".ui-pl-name-title").Text()
+	name := scraped.Find(".ui-pl-name-title").Text()
 	string_array := strings.Split(name, " - ")
 
 	if len(string_array) > 1 {
@@ -179,27 +179,27 @@ func (cb *CabelasScraper) Scrape() (response map[string]int, errs []error) {
 				doc, _ = goquery.NewDocument(url)
 			}
 			selection := doc.Find(".productItem")
-			selection.Each(func(i int, item *goquery.Selection) {
-				product := models.NewProduct()
-				product.Type = product_type
-				product.Brand, _ = cb.getBrand(item)
-				product.Name, _ = cb.getName(item)
-				product.Title, _ = cb.getTitle(item)
-				product.Price, _ = cb.getPrice(item)
-				product.Url, _ = cb.getUrl(item)
-				product.Retailer = cb.Retailer.Name
+			selection.Each(func(i int, scraped *goquery.Selection) {
+				item := models.NewItem()
+				item.Type = product_type
+				item.Brand, _ = cb.getBrand(scraped)
+				item.Name, _ = cb.getName(scraped)
+				item.Title, _ = cb.getTitle(scraped)
+				item.Price, _ = cb.getPrice(scraped)
+				item.Url, _ = cb.getUrl(scraped)
+				item.Retailer = cb.Retailer.Name
 
-				product.Image, err = cb.getImg(item)
+				item.Image, err = cb.getImg(scraped)
 				err = errors.New("New Error")
 				if err != nil {
 					errs = append(errs, err)
 				}
 
-				product.Details, _ = cb.getDetails(item)
+				item.Details, _ = cb.getDetails(scraped)
 
-				found, _ := product.Handle(
-					product.Name, product.Title, product.Brand, product.Url,
-					product_type)
+				found, _ := item.Handle(
+					item.Name, item.Title, item.Brand, item.Url,
+					"items")
 				if found {
 					//products = append(products, product)
 					item_added++
