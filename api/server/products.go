@@ -9,6 +9,24 @@ import (
 	"github.com/labstack/echo"
 )
 
+func CreateProduct(c echo.Context) error {
+
+	// TODO: Implement
+	return nil
+}
+
+func UpdateProduct(c echo.Context) error {
+
+	// TODO: Implement
+	return nil
+}
+
+func DeleteProduct(c echo.Context) error {
+
+	// TODO: Implement
+	return nil
+}
+
 func GetProducts(c echo.Context) error {
 
 	page := 1

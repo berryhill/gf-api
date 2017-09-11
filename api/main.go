@@ -5,7 +5,6 @@ import (
 	"github.com/berryhill/gf-api/api/server"
     //"github.com/berryhill/gf-api/api/models"
 
-
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/dgrijalva/jwt-go"
@@ -37,17 +36,23 @@ func main() {
 		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
 	}))
 
-	adminGroup := e.Group("/admin")
+	r := e.Group("/admin")
 	config := middleware.JWTConfig{
 		Claims:     &jwtCustomClaims{},
 		SigningKey: []byte("secret"),
 	}
-	adminGroup.Use(middleware.JWTWithConfig(config))
+	r.Use(middleware.JWTWithConfig(config))
 
 	// TODO: Implement CMS endpoints
 	e.POST("/login", server.Login)
-	//adminGroup.POST("/product", server.CreateProduct)
-	//e.PUT("/product", server.UpdateProduct)
+
+	r.POST("/product", server.CreateProduct)
+	// r.GET("/product/:id", server.GetProduct)
+	r.PUT("/product", server.UpdateProduct)
+	r.DELETE("/product", server.DeleteProduct)
+
+	// r.GET("/items", server.GetItems)
+	// r.GET("/items/:id"", server.GetItem)
 
 	e.POST("/backcountry/scrape", server.ScrapeBackcountry)
 	e.POST("/cabelas/scrape", server.ScrapeCabelas)
