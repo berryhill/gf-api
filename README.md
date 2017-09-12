@@ -1,32 +1,40 @@
-# Docker Fun
+# Gf-Api
+Remove sudo if use OSX
+
+## Clone
+
+```
+$ git clone git@github.com:berryhill/gf-api.git
+```
 
 ## Install Dependencies
 
 ```
-glide install
+$ cd api
+$ glide install
+$ cd ..
 ```
+
+If you don't have glide, click [here](https://github.com/Masterminds/glide#install) for installation instructions
 
 ## Docker Setup, Build, and Run
 
 Install Docker Glide Image
 
 ```
-docker run --rm -it -v $PWD:/go/src/github.com/treeder/dockergo -w /go/src/github.com/treeder/dockergo treeder/glide init
+$ sudo docker run --rm -it -v $PWD:/go/src/github.com/treeder/dockergo -w /go/src/github.com/treeder/dockergo treeder/glide init
 # Say No to the question it asks..
 ```
 
 ```
-docker run --rm -it -v $PWD:/go/src/github.com/treeder/dockergo -w /go/src/github.com/treeder/dockergo treeder/glide update
+$ sudo docker run --rm -it -v $PWD:/go/src/github.com/treeder/dockergo -w /go/src/github.com/treeder/dockergo treeder/glide update
 ```
 
-Build
+Build / Run
 
 ```
-sudo docker build -t berryhill/docker-fun .
+$ sudo docker-compose up --build
 ```
 
-Run
-
-```
-sudo docker run --rm -p 8080:8080 berryhill/hello-docker
-```
+## Frontend
+Find the front end [here](https://github.com/berryhill/gf-frontend)
