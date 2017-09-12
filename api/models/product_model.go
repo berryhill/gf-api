@@ -8,6 +8,7 @@ import (
 
 	"github.com/berryhill/gf-api/api/db"
 
+	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -73,6 +74,13 @@ func (p *Product) Handle(
 
 	collection := session.DB("test").C(db_col)
 
+	index := mgo.Index{
+		Key: []string{"$text:title", "$text:brand", "$text:url"},
+	}
+
+	err = collection.EnsureIndex(index)
+
+
 	found = false; result := Product{}
 	err = collection.Find(bson.M{
 			"title": title,
@@ -119,6 +127,12 @@ func GetProducts(
 	defer session.Close()
 
 	collection := session.DB("test").C(product)
+
+	index := mgo.Index{
+		Key: []string{"$text:name", "$text:brand"},
+	}
+
+	err = collection.EnsureIndex(index)
 
 	params_exist := false
 	for _ = range query_params {
