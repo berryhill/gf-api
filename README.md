@@ -1,5 +1,10 @@
 # Gf-Api
-Remove sudo if use OSX
+
+Remove sudo if using OSX
+
+### API SPEC
+
+[API Spec](./docs/api-spec.md)
 
 ## Clone
 
@@ -30,11 +35,34 @@ $ sudo docker run --rm -it -v $PWD:/go/src/github.com/treeder/dockergo -w /go/sr
 $ sudo docker run --rm -it -v $PWD:/go/src/github.com/treeder/dockergo -w /go/src/github.com/treeder/dockergo treeder/glide update
 ```
 
-Build / Run
+## Build / Seed
 
 ```
-$ sudo docker-compose up --build
+sudo docker-compose -f docker-compose.seed.yml up --build
+```
+
+## Run
+```
+$ sudo docker-compose up
 ```
 
 ## Frontend
 Find the front end [here](https://github.com/berryhill/gf-frontend)
+
+# Tasks
+
+### Completed
++ Dockerize
+
+### WIP
++ Continuous Integration / Continuous Deployment
++ Scrapers x5
++ Item Model (to be composed by the Product Model)
++ Setup/Seed DB
+
+### TODO
++ Tests
++ Logging
++ Cache
++ Prod Deploy
+
