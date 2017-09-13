@@ -40,12 +40,13 @@ $ sudo docker run --rm -it -v $PWD:/go/src/github.com/treeder/dockergo -w /go/sr
 ```
 sudo docker-compose -f docker-compose.seed.yml up --build
 ```
-Project will be up at this point.. but if you shutdow, to re-up, continue to 'Run'
+Project will be up at this point.. but if you shutdown, to re-up, continue to 'Run'
 
 ## Run
 ```
 $ sudo docker-compose up
 ```
+
 
 ## Frontend
 Find the front end [here](https://github.com/berryhill/gf-frontend)
@@ -53,17 +54,35 @@ Find the front end [here](https://github.com/berryhill/gf-frontend)
 # Tasks
 
 ### Completed
-+ Dockerize
++ **Dockerize**
++ **Setup/Seed DB**
++ **Pagination**
 
 ### WIP
 + Continuous Integration / Continuous Deployment
+    + *Kubernetes*
+    + *Travis CI*
 + Scrapers x5
-+ Item Model (to be composed by the Product Model)
-+ Setup/Seed DB
+    + **backcountry**
+    + **cabelas**
+    + trouts
+    +
+    +
++ Item Model
+    + **Change product to item model**
+    + *Refactor product model to compose item models*
+    + Implement algorithms to choose best item
++ CMS
+    + **CMS admin user .jwt architecture**
+    + *restricted CMS endpoints*
++ Filters
+    + Endpoints
+    + Query params
 
 ### TODO
 + Tests
 + Logging
++ Better search
 + Cache
 + Prod Deploy
 
