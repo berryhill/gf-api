@@ -1,0 +1,15 @@
+sudo: required
+
+language: go
+
+services:
+  - docker
+
+before_install:
+  - ./resources/glide-install.sh
+
+install:
+  - docker-compose -f docker-compose.seed.yml up --build -d
+
+script:
+  - echo "skip tests"
