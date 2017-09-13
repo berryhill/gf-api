@@ -6,8 +6,8 @@ cache:
   directories:
     -s "$HOME/coding/google-cloud-sdk"
 
-services:
-  - docker
+#services:
+#  - docker
 
 env:
   global:
@@ -25,8 +25,8 @@ before_install:
   - gcloud --quiet components update beta
   - ./resources/glide-install.sh
 
-#install:
-#  - docker-compose -f docker-compose.seed.yml up --build -d
+install:
+  - docker-compose -f docker-compose.seed.yml up --build -d
 
 script:
   - echo "skip tests"
@@ -34,4 +34,10 @@ script:
 before_deploy:
   - gcloud --quiet components update kubectl
 
+deploy:
+  - provider: script
+    script: ./resources/deploy.sh
+    skip_cleanup: true
+    on:
+      branch: stage
 
