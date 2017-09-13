@@ -1,7 +1,10 @@
 # Gf-Api
 
-Remove sudo if using OSX
+### -------------
+## IMPLEMENTING SEEING DATA FOR DYNAMIC PORTIONS OF THE APP.. STAND BY IF TRYING TO UP
+### -------------
 
+Remove sudo if use OSX
 
 ### API SPEC
 
@@ -36,15 +39,10 @@ $ sudo docker run --rm -it -v $PWD:/go/src/github.com/treeder/dockergo -w /go/sr
 $ sudo docker run --rm -it -v $PWD:/go/src/github.com/treeder/dockergo -w /go/src/github.com/treeder/dockergo treeder/glide update
 ```
 
-## Build / Seed
+Build / Run
 
 ```
-sudo docker-compose -f docker-compose.seed.yml up --build
-```
-
-## Run
-```
-$ sudo docker-compose up
+$ sudo docker-compose up --build
 ```
 
 ## Frontend
