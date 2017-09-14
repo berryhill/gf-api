@@ -44,11 +44,9 @@ Find the front end [here](https://github.com/berryhill/gf-frontend)
 + **Dockerize**
 + **Setup/Seed DB**
 + **Pagination**
++ **Continuous Integration / Continuous Deployment**
 
 ### WIP
-+ Continuous Integration / Continuous Deployment
-    + *Kubernetes*
-    + *Travis CI*
 + Scrapers x5
     + **backcountry**
     + **cabelas**

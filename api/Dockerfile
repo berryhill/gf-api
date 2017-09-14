@@ -1,5 +1,7 @@
 FROM iron/go:dev
 
+ARG DATABASE=dev
+
 WORKDIR /app
 
 ## Install glide
@@ -13,7 +15,7 @@ WORKDIR /app
 # Build API
 ENV SRC_DIR=/go/src/github.com/berryhill/gf-api/api/
 ADD . $SRC_DIR
-RUN cd $SRC_DIR; go get
-RUN cd $SRC_DIR; go build -o api; cp api /app/
+ENV DATABASE ${DATABASE}
+RUN cd $SRC_DIR; go build -o api -tags=${DATABASE}; cp api /app/
 
 ENTRYPOINT ["./api"]

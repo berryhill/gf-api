@@ -1,11 +1,11 @@
 #!/bin/bash
 
-
 set -e
+
 cd api
 
 echo "Build Docker"
-docker build -t gcr.io/${PROJECT_NAME}/gf-api:$TRAVIS_COMMIT .
+docker build -t gcr.io/${PROJECT_NAME}/gf-api:$TRAVIS_COMMIT --build-arg DATABASE=stage .
 docker tag gcr.io/${PROJECT_NAME}/gf-api:$TRAVIS_COMMIT gcr.io/${PROJECT_NAME}/gf-api:latest
 
 echo "Authenticate Google Cloud Engine"
