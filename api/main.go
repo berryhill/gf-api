@@ -16,15 +16,6 @@ func main() {
 	db.Connect()
 	server.SetupScrapers()
 
-	 //retailer := models.NewRetailer(
-	 //	"cabelas",
-	 //	"https://www.cabelas.com",
-	 //	"http://www.cabelas.com/catalog/browse/_/" +
-		//	"N-1104841?CQ_view=list&CQ_ztype=GNP&CQ_pagesize=40",
-	 //	"fly_rods",
-	 //)
-	 //retailer.Create()
-
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -34,9 +25,13 @@ func main() {
 		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
 	}))
 
+	// CMS Endpoints
 	e.POST("/backcountry/scrape", server.ScrapeBackcountry)
 	e.POST("/cabelas/scrape", server.ScrapeCabelas)
 
+	e.POST("/retailer", server.CreateRetailer)
+
+	// Frontend Endpoints
 	e.GET("/product-types", server.GetProductTypes)
 
 	e.GET("/products/:product", server.GetProducts)
