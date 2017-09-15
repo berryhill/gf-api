@@ -39,7 +39,6 @@ func NewProduct() *Product {
 	return p
 }
 
-
 func (p *Product) Create(db_col string) error {
 
 	session := db.Session.Clone()
