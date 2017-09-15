@@ -65,6 +65,7 @@ Find the front end [here](https://github.com/berryhill/gf-frontend)
         + GET/retailer/:id
         + PUT/retailer/:id
         + DELETE/retailer/:id
+        + **POST/product-types**
 + Filters
     + Endpoints
     + Query params
