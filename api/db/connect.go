@@ -4,29 +4,24 @@ import (
 	"log"
 	"time"
 
+	"github.com/berryhill/gf-api/api/config"
+
 	"gopkg.in/mgo.v2"
 )
 
 
 var Session *mgo.Session  // Session stores mongo session
 
-const (
-	//MongoDBHosts = "10.15.248.93:27017"
-	MongoDBHosts = "172.17.0.1:27017"
-	AuthDatabase = ""
-	AuthUserName = ""
-	AuthPassword = ""
-	TestDatabase = "test"
-)
-
 func Connect() {
 
+	conf := config.MakeConfig()
+
 	mongoDBDialInfo := &mgo.DialInfo{
-		Addrs:    []string{MongoDBHosts},
+		Addrs:    []string{conf.MongoDBHosts},
 		Timeout:  60 * time.Second,
-		Database: AuthDatabase,
-		Username: AuthUserName,
-		Password: AuthPassword,
+		Database: conf.AuthDatabase,
+		Username: conf.AuthUserName,
+		Password: conf.AuthPassword,
 	}
 
 	session, err := mgo.DialWithInfo(mongoDBDialInfo)

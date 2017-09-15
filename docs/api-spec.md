@@ -8,6 +8,12 @@ ex:
 $ curl http://localhost:8080/products/fly_rods
 ```
 
+#### Query Parameters
+```
+?search={string}
+
+```
+
 #### Response
 ```
 {
