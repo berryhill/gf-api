@@ -58,8 +58,13 @@ Find the front end [here](https://github.com/berryhill/gf-frontend)
     + *Refactor product model to compose item models*
     + Implement algorithms to choose best item
 + CMS
-    + **CMS admin user .jwt architecture**
+    + *CMS admin user .jwt architecture*
     + *restricted CMS endpoints*
+        + **POST/retailer**
+        + *GET/retailers*
+        + GET/retailer/:id
+        + PUT/retailer/:id
+        + DELETE/retailer/:id
 + Filters
     + Endpoints
     + Query params

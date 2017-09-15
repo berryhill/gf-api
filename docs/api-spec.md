@@ -46,6 +46,40 @@ $ curl http://localhost:8080/products/fly_rods
 }
 ```
 
+### POST/retailer
+
+#### Request Payload
+```
+{
+    "name": {string},
+    "base_url": {string},
+    "products": {
+        {string}: {string},
+        ...
+    }
+}
+```
+
+ex:
+
+```
+$ curl -d '{"name":"smapler", "base_url":"s.com", "products": {"sample": "/sample"}}' \
+    -H "Content-Type: application/json" \
+    -X POST http://localhost:8080/retailer
+```
+
+#### Response
+```
+{
+    "name": {string},
+    "base_url": {string},
+    "products": {
+        {string}: {string},
+        ...
+    }
+}
+```
+
 ### POST/:scraper/scrape
 
 ex:

@@ -13,7 +13,7 @@ import (
 type Retailer struct {
 	Name 			string           	`json:"name"`
 	BaseUrl			string        		`json:"base_url"`
-	Products		map[string]string   `json:"product_urls"`
+	Products		map[string]string   `json:"products"`
 }
 
 func NewRetailer(
