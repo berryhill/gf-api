@@ -44,7 +44,7 @@ func GetProductTypes() (product_types []*map[string]interface{}, err error) {
 	session := db.Session.Clone()
 	defer session.Close()
 
-	collection := session.DB("test").C("products_types")
+	collection := session.DB("test").C("product_types")
 
 	err = collection.Find(nil).All(&product_types)
 	if err != nil {

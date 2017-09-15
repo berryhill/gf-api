@@ -1,6 +1,6 @@
 # API spec
 
-### GET/products/:product_name
+## GET/products/:product_name
 
 ex:
 
@@ -46,7 +46,49 @@ $ curl http://localhost:8080/products/fly_rods
 }
 ```
 
-### POST/retailer
+## POST/product-type
+
+#### Request Payload
+```
+{
+    "name": {string}
+}
+```
+
+ex:
+
+```
+$ curl -d '{"name":"Fly Rods"}' \
+    -H "Content-Type: application/json" \
+    -X POST http://localhost:8080/product-type
+```
+
+#### Response
+```
+{
+    "name": {string}
+}
+```
+
+## GET/product-types
+
+ex:
+
+```
+$ curl http://localhost:8080/product-types
+```
+
+#### Response
+```
+[
+    {
+        "_id": {bson.ObjectId}
+        "name": {string}
+    }
+]
+```
+
+## POST/retailer
 
 #### Request Payload
 ```
@@ -80,31 +122,7 @@ $ curl -d '{"name":"smapler", "base_url":"s.com", "products": {"sample": "/sampl
 }
 ```
 
-### POST/product-type
-
-#### Request Payload
-```
-{
-    "name": {string}
-}
-```
-
-ex:
-
-```
-$ curl -d '{"name":"Fly Rods"}' \
-    -H "Content-Type: application/json" \
-    -X POST http://localhost:8080/product-type
-```
-
-#### Response
-```
-{
-    "name": {string}
-}
-```
-
-### POST/:scraper/scrape
+## POST/:scraper/scrape
 
 ex:
 
