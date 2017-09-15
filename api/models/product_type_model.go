@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"encoding/json"
 
 	"github.com/berryhill/gf-api/api/db"
@@ -9,8 +10,8 @@ import (
 
 type ProductType struct {
 	Name 			string        `json:"name"`
-	Url 			string        `json:"url"`
-	DbCollection	string    	  `json:"db_collection"`
+	//Url 			string        `json:"url"`
+	//DbCollection	string    	  `json:"db_collection"`
 }
 
 func NewProductType(
@@ -18,18 +19,32 @@ func NewProductType(
 
 	pt := new(ProductType)
 	pt.Name = name
-	pt.Url = url
-	pt.DbCollection = db_collection
+	//pt.Url = url
+	//pt.DbCollection = db_collection
 
 	return pt
 }
 
+func (pt *ProductType) Create() error {
+
+	session := db.Session.Clone()
+	defer session.Close()
+
+	collection := session.DB("test").C("product_types")
+
+	err := collection.Insert(pt)
+	if err != nil {
+		errors.New("Error inserting product-type into DB")
+	}
+
+	return err
+}
 func GetProductTypes() (product_types []*map[string]interface{}, err error) {
 
 	session := db.Session.Clone()
 	defer session.Close()
 
-	collection := session.DB("test").C("products")
+	collection := session.DB("test").C("products_types")
 
 	err = collection.Find(nil).All(&product_types)
 	if err != nil {
