@@ -30,7 +30,6 @@ func main() {
 	e.POST("/cabelas/scrape", server.ScrapeCabelas)
 
 	e.POST("/retailer", server.CreateRetailer)
-	e.POST("/product-type", server.CreateProductType)
 
 	// Frontend Endpoints
 	e.GET("/product-types", server.GetProductTypes)

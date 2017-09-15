@@ -80,30 +80,6 @@ $ curl -d '{"name":"smapler", "base_url":"s.com", "products": {"sample": "/sampl
 }
 ```
 
-### POST/product-type
-
-#### Request Payload
-```
-{
-    "name": {string}
-}
-```
-
-ex:
-
-```
-$ curl -d '{"name":"Fly Rods"}' \
-    -H "Content-Type: application/json" \
-    -X POST http://localhost:8080/product-type
-```
-
-#### Response
-```
-{
-    "name": {string}
-}
-```
-
 ### POST/:scraper/scrape
 
 ex:
