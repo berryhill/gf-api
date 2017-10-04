@@ -1,5 +1,5 @@
-hash: 98f97077a94e8cb7adb45b31145232955ab39ab21f10e6217d9be3d168a03bf0
-updated: 2017-08-25T01:02:09.310568977-06:00
+hash: 6fce2e1f5e5a858fe36a8c6a5b5b2431d0b5b10be79fcc12d64f0efa3284f87c
+updated: 2017-10-03T23:09:35.925048216-06:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 349dd0209470eabd9514242c688c403c0926d266
@@ -22,6 +22,12 @@ imports:
   version: fc9e8d8ef48496124e79ae0df75490096eccf6fe
 - name: github.com/PuerkitoBio/goquery
   version: e1271ee34c6a305e38566ecd27ae374944907ee9
+- name: github.com/smartystreets/goconvey
+  version: 9e8dc3f972df6c8fcc0375ef492c24d0bb204857
+  subpackages:
+  - convey
+  - convey/gotest
+  - convey/reporting
 - name: github.com/valyala/bytebufferpool
   version: e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7
 - name: github.com/valyala/fasttemplate
@@ -47,4 +53,15 @@ imports:
   - internal/json
   - internal/sasl
   - internal/scram
-testImports: []
+testImports:
+- name: github.com/gopherjs/gopherjs
+  version: 415225646bb92c4449bb484646f2c95a98402f6f
+  subpackages:
+  - js
+- name: github.com/jtolds/gls
+  version: 77f18212c9c7edc9bd6a33d383a7b545ce62f064
+- name: github.com/smartystreets/assertions
+  version: 0b37b35ec7434b77e77a4bb29b79677cced992ea
+  subpackages:
+  - internal/go-render/render
+  - internal/oglematchers

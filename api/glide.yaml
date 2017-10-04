@@ -4,3 +4,5 @@ import:
   version: v3.2.1
 - package: github.com/PuerkitoBio/goquery
   version: v1.1.0
+- package: github.com/smartystreets/goconvey
+  version: 1.6.3
