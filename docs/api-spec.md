@@ -5,7 +5,7 @@
 ex:
 
 ```
-$ curl http://localhost:8080/products/fly_rods
+$ curl http://104.154.247.230:8080/products/fly_rods?search=sage
 ```
 
 #### Query Parameters
