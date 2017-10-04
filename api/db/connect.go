@@ -11,17 +11,18 @@ import (
 
 
 var Session *mgo.Session  // Session stores mongo session
+var Conf *config.Config
 
 func Connect() {
 
-	conf := config.MakeConfig()
+	Conf = config.MakeConfig()
 
 	mongoDBDialInfo := &mgo.DialInfo{
-		Addrs:    []string{conf.MongoDBHosts},
+		Addrs:    []string{Conf.MongoDBHosts},
 		Timeout:  60 * time.Second,
-		Database: conf.AuthDatabase,
-		Username: conf.AuthUserName,
-		Password: conf.AuthPassword,
+		Database: Conf.AuthDatabase,
+		Username: Conf.AuthUserName,
+		Password: Conf.AuthPassword,
 	}
 
 	session, err := mgo.DialWithInfo(mongoDBDialInfo)

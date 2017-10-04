@@ -24,7 +24,7 @@ before_install:
   - gcloud --quiet version
   - gcloud --quiet components update
   - gcloud --quiet components update beta
-  - ./resources/glide-install.sh
+  - ./services/glide-install.sh
 
 install:
   - sudo docker-compose -f docker-compose.seed.yml up --build -d
@@ -37,7 +37,7 @@ before_deploy:
 
 deploy:
   - provider: script
-    script: ./resources/deploy.sh
+    script: ./services/deploy.sh
     skip_cleanup: true
     on:
       branch: master
