@@ -39,6 +39,30 @@ func NewProduct() *Product {
 	return p
 }
 
+func FindProductByName(name string, db_col string) (*Product, error) {
+
+	session := db.Session.Clone()
+	defer session.Close()
+
+	result := Product{}
+	collection := session.DB("test").C(db_col)
+
+	index := mgo.Index{
+		Key: []string{"$text:name"},
+	}
+	err := collection.EnsureIndex(index)
+	if err != nil {
+		return &result, err
+	}
+
+	err = collection.Find(bson.M{"name": name}).One(&result)
+	if err != nil {
+		return &result, err
+	}
+
+	return &result, nil
+}
+
 func (p *Product) Create(db_col string) error {
 
 	session := db.Session.Clone()
@@ -49,6 +73,29 @@ func (p *Product) Create(db_col string) error {
 	err := collection.Insert(p)
 	if err != nil {
 		errors.New("Error inserting product into DB")
+	}
+
+	return err
+}
+
+func (p *Product) Delete(db_col string) error {
+
+	session := db.Session.Clone()
+	defer session.Close()
+
+	collection := session.DB("test").C(db_col)
+
+	//index := mgo.Index{
+	//	Key: []string{"$text:title"},
+	//}
+	//err := collection.EnsureIndex(index)
+	//if err != nil {
+	//	return err
+	//}
+
+	err := collection.Remove(bson.M{"title": p.Title})
+	if err != nil {
+		errors.New("Error deleting product into DB")
 	}
 
 	return err
@@ -76,9 +123,7 @@ func (p *Product) Handle(
 	index := mgo.Index{
 		Key: []string{"$text:title", "$text:brand", "$text:url"},
 	}
-
 	err = collection.EnsureIndex(index)
-
 
 	found = false; result := Product{}
 	err = collection.Find(bson.M{
@@ -89,10 +134,10 @@ func (p *Product) Handle(
 	// TODO: Need to compare error to "not found"
 
 	if err != nil {
-		found = true
 		p.Create(db_col)
 	} else {
-		p.Print()
+		found = true
+		//p.Print()
 	}
 
 	return found, err
